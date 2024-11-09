@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CamemBERT and LLaMA Sentiment Analysis and image classification </title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            background-color: #f4f4f9; 
+            color: #333; 
+            margin: 0; 
+            padding: 0; 
+        }
+        #container { 
+            max-width: 600px; 
+            margin: 50px auto; 
+            padding: 20px; 
+            background-color: #fff; 
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+            border-radius: 8px; 
+        }
+        h2 { 
+            color: #4CAF50; 
+        }
+        textarea { 
+            width: 100%; 
+            padding: 10px; 
+            margin: 10px 0; 
+            border: 1px solid #ccc; 
+            border-radius: 4px; 
+            font-size: 16px; 
+        }
+        button { 
+            background-color: #4CAF50; 
+            color: white; 
+            padding: 10px 20px; 
+            border: none; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            font-size: 16px; 
+        }
+        button:hover { 
+            background-color: #45a049; 
+        }
+        #result, #llamaResult { 
+            font-weight: bold; 
+            margin-top: 20px; 
+            padding: 10px; 
+            background-color: #e7f3e7; 
+            border: 1px solid #d4e5d4; 
+            border-radius: 4px; 
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <h2>CamemBERT Sentiment Analysis</h2>
+        <textarea id="textInput" rows="4" placeholder="Enter text for sentiment analysis"></textarea>
+        <button onclick="analyzeSentiment()">Analyze Sentiment</button>
+        <div id="result"></div>
+
+        <h2>LLaMA Model Analysis</h2>
+        <textarea id="llamaTextInput" rows="4" placeholder="Enter description for LLaMA analysis"></textarea>
+        <button onclick="analyzeLlama()">Analyze with LLaMA</button>
+        <div id="llamaResult"></div>
+        <h2>Image Classifier</h2>
+        <form action="/" method="post" enctype="multipart/form-data" class="text-center">
+            <input class="form-control" type="file" name="imagefile">
+            <input class="btn btn-primary mt-3" type="submit" value="Predict Image">
+        </form>
+
+        {% if prediction %}
+            <p class="text-center">Image is a {{prediction}}</p>
+        {% endif %}
+    </div>
+
+    <script>
+        async function analyzeSentiment() {
+            const text = document.getElementById("textInput").value;
+            const resultDiv = document.getElementById("result");
+            resultDiv.textContent = "Analyzing...";
+
+            const response = await fetch("http://127.0.0.1:5000/predict", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ text })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                resultDiv.textContent = `Sentiment: ${data.sentiment}`;
+            } else {
+                resultDiv.textContent = "Error analyzing sentiment.";
+            }
+        }
+
+        async function analyzeLlama() {
+            const description = document.getElementById("llamaTextInput").value;
+            const llamaResultDiv = document.getElementById("llamaResult");
+            llamaResultDiv.textContent = "Analyzing...";
+
+            const response = await fetch("http://127.0.0.1:5000/llama_predict", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ description })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                llamaResultDiv.innerHTML = `
+                    Sentiment: ${data.sentiment}<br>
+                    Location: ${data.location}<br>
+                    Timing: ${data.timing}<br>
+                    Forest Fire: ${data.forestFire ? "Yes" : "No"}
+                `;
+            } else {
+                llamaResultDiv.textContent = "Error analyzing with LLaMA.";
+            }
+        }
+    </script>
+</body>
+</html>

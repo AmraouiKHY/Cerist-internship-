@@ -1,0 +1,11 @@
+.train.jsonl
+train.jsonl
+val.jsonl
+test.jsonl
+allocine_dataset.pickle
+camembert_weights.hdf5
+number_of_tokens.png
+test accuracy.png
+test_confusion_mx.png
+val_confusion_mx.png
+wildfire_model.h5
