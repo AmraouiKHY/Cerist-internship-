@@ -64,14 +64,13 @@
         <textarea id="llamaTextInput" rows="4" placeholder="Enter description for LLaMA analysis"></textarea>
         <button onclick="analyzeLlama()">Analyze with LLaMA</button>
         <div id="llamaResult"></div>
-        <h2>Image Classifier</h2>
-        <form action="/" method="post" enctype="multipart/form-data" class="text-center">
-            <input class="form-control" type="file" name="imagefile">
-            <input class="btn btn-primary mt-3" type="submit" value="Predict Image">
+        <h1>Wildfire Detection</h1>
+        <form action="/predict_image" method="post" enctype="multipart/form-data">
+            <input type="file" name="imagefile">
+            <input type="submit" value="Upload and Predict">
         </form>
-
         {% if prediction %}
-            <p class="text-center">Image is a {{prediction}}</p>
+        <p>Prediction: {{ prediction }}</p>
         {% endif %}
     </div>
 
